@@ -44,7 +44,7 @@
      * @directive
      */
     angular.module('ui-rangeSlider', [])
-        .directive('rangeSlider', ["$document", "$filter", "$log", function($document, $filter, $log) {
+        .directive('rangeSlider', ["$document", "$filter", "$log", "cb.virtualPath", function ($document, $filter, $log, virtualPath) {
 
         // test for mouse, pointer or touch
         var EVENT = window.PointerEvent ? 1 : (window.MSPointerEvent ? 2 : ('ontouchend' in document ? 3 : 4)), // 1 = IE11, 2 = IE10, 3 = touch, 4 = mouse
@@ -95,7 +95,7 @@
 
         return {
             restrict: 'A',
-            replace: true,
+            /*replace: true,
             template: ['<div class="ngrs-range-slider">',
                          '<div class="ngrs-runner">',
                            '<div class="ngrs-handle ngrs-handle-min"><i></i></div>',
@@ -103,10 +103,13 @@
                            '<div class="ngrs-join"></div>',
                          '</div>',
                          '<div class="ngrs-value-runner">',
-                           '<div class="ngrs-value ngrs-value-min" ng-show="showValues"><div>{{filteredModelMin}}</div></div>',
-                           '<div class="ngrs-value ngrs-value-max" ng-show="showValues"><div>{{filteredModelMax}}</div></div>',
+                           '<div class="ngrs-value leyend ngrs-value-min" ng-show="showValues"><div>from</div></div>',
+                           '<div class="ngrs-value leyend ngrs-value-max" ng-show="showValues"><div>to</div></div>',
+                           '<div class="ngrs-value ngrs-value-min" ng-show="showValues"><div>{{filteredModelMin}} yrs</div></div>',
+                           '<div class="ngrs-value ngrs-value-max" ng-show="showValues" ng-if="filteredModelMax == 20"><div>{{filteredModelMax}}+ yrs</div></div>',
+                           '<div class="ngrs-value ngrs-value-max" ng-show="showValues" ng-if="filteredModelMax < 20"><div>{{filteredModelMax}} yrs</div></div>',
                          '</div>',
-                       '</div>'].join(''),
+                       '</div>'].join(''),*/
             scope: {
                 disabled: '=?',
                 min: '=',
@@ -124,6 +127,9 @@
                 pinHandle: '@',
                 preventEqualMinMax: '@',
                 attachHandleValues: '@'
+            },
+            templateUrl: function (tElement, tAttrs) {
+                return virtualPath.toAbsolute('~/EdgeWeb/ng/partials/search/' + tAttrs.template);
             },
             link: function(scope, element, attrs, controller) {
 
@@ -144,6 +150,7 @@
                 // filtered
                 scope.filteredModelMin = scope.modelMin;
                 scope.filteredModelMax = scope.modelMax;
+                //console.log(scope);
 
                 /**
                  *  FALL BACK TO DEFAULTS FOR SOME ATTRIBUTES
