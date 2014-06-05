@@ -95,21 +95,6 @@
 
         return {
             restrict: 'A',
-            /*replace: true,
-            template: ['<div class="ngrs-range-slider">',
-                         '<div class="ngrs-runner">',
-                           '<div class="ngrs-handle ngrs-handle-min"><i></i></div>',
-                           '<div class="ngrs-handle ngrs-handle-max"><i></i></div>',
-                           '<div class="ngrs-join"></div>',
-                         '</div>',
-                         '<div class="ngrs-value-runner">',
-                           '<div class="ngrs-value leyend ngrs-value-min" ng-show="showValues"><div>from</div></div>',
-                           '<div class="ngrs-value leyend ngrs-value-max" ng-show="showValues"><div>to</div></div>',
-                           '<div class="ngrs-value ngrs-value-min" ng-show="showValues"><div>{{filteredModelMin}} yrs</div></div>',
-                           '<div class="ngrs-value ngrs-value-max" ng-show="showValues" ng-if="filteredModelMax == 20"><div>{{filteredModelMax}}+ yrs</div></div>',
-                           '<div class="ngrs-value ngrs-value-max" ng-show="showValues" ng-if="filteredModelMax < 20"><div>{{filteredModelMax}} yrs</div></div>',
-                         '</div>',
-                       '</div>'].join(''),*/
             scope: {
                 disabled: '=?',
                 min: '=',
@@ -126,7 +111,8 @@
                 showValues: '@',
                 pinHandle: '@',
                 preventEqualMinMax: '@',
-                attachHandleValues: '@'
+                attachHandleValues: '@',
+                units: '@'
             },
             templateUrl: function (tElement, tAttrs) {
                 return virtualPath.toAbsolute('~/EdgeWeb/ng/partials/search/' + tAttrs.template);
