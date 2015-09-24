@@ -125,6 +125,7 @@
                     decimalPlaces: '@',
                     filter: '@',
                     filterOptions: '@',
+                    readOnly: '=?',
                     showValues: '@',
                     pinHandle: '@',
                     preventEqualMinMax: '@',
@@ -412,6 +413,8 @@
                     }
 
                     function handleMove(index) {
+
+                        if (scope.readOnly) return;
 
                         var $handle = handles[index];
 
