@@ -47,7 +47,7 @@
      * @directive
      */
     angular.module('ui-rangeSlider', [])
-        .directive('rangeSlider', ['$document', '$filter', '$log', function($document, $filter, $log) {
+        .directive('rangeSlider', ['$document', '$filter', '$log', 'cb.virtualPath', function($document, $filter, $log, virtualPath) {
 
             // test for mouse, pointer or touch
             var eventNamespace = '.rangeSlider',
@@ -56,6 +56,7 @@
                     disabled: false,
                     orientation: 'horizontal',
                     step: 0,
+                    summary: null,
                     decimalPlaces: 0,
                     showValues: true,
                     preventEqualMinMax: false,
@@ -118,17 +119,21 @@
                     max: '=',
                     modelMin: '=?',
                     modelMax: '=?',
+                    modelName: '=?',
                     onHandleDown: '&', // calls optional function when handle is grabbed
                     onHandleUp: '&', // calls optional function when handle is released
                     orientation: '@', // options: horizontal | vertical | vertical left | vertical right
                     step: '@',
+                    summary: '=?',
                     decimalPlaces: '@',
                     filter: '@',
                     filterOptions: '@',
+                    readOnly: '=?',
                     showValues: '@',
                     pinHandle: '@',
                     preventEqualMinMax: '@',
                     attachHandleValues: '@',
+                    units: '@',
                     getterSetter: '@' // Allow the use of getterSetters for model values
                 };
 
@@ -150,19 +155,10 @@
             return {
                 restrict: 'A',
                 replace: true,
-                template: ['<div class="ngrs-range-slider">',
-                    '<div class="ngrs-runner">',
-                    '<div class="ngrs-handle ngrs-handle-min"><i></i></div>',
-                    '<div class="ngrs-handle ngrs-handle-max"><i></i></div>',
-                    '<div class="ngrs-join"></div>',
-                    '</div>',
-                    '<div class="ngrs-value-runner">',
-                    '<div class="ngrs-value ngrs-value-min" ng-show="showValues"><div>{{filteredModelMin}}</div></div>',
-                    '<div class="ngrs-value ngrs-value-max" ng-show="showValues"><div>{{filteredModelMax}}</div></div>',
-                    '</div>',
-                    '</div>'
-                ].join(''),
                 scope: scopeOptions,
+                templateUrl: function (tElement, tAttrs) {
+                    return virtualPath.toAbsolute('~/EdgeWeb/ng/partials/search/' + tAttrs.template);
+                },
                 link: function(scope, element, attrs, controller) {
 
                     /**
@@ -471,8 +467,13 @@
                                     angular.element(values[1]).css(posOpp, 'auto');
                                 }
 
-                                // reposition join
-                                angular.element(join).css(pos, handle1pos + '%').css(posOpp, (100 - handle2pos) + '%');
+                                if (!scope.pinHandle) {
+                                    // reposition join
+                                    angular.element(join).css(pos, handle1pos + '%').css(posOpp, (100 - handle2pos) + '%');
+                                } else {
+                                    //console.log('scope.pinHandle', scope.pinHandle);
+                                    angular.element(join).css(pos, (100 - handle2pos) + '%').css(posOpp, (100 - handle1pos) + '%');
+                                }
 
                                 // ensure min handle can't be hidden behind max handle
                                 if (handle1pos > 95) {
@@ -486,6 +487,8 @@
 
                     function handleMove(index) {
 
+                        if (scope.readOnly) return;
+                        
                         var $handle = handles[index];
 
                         // on mousedown / touchstart
